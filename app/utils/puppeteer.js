@@ -33,7 +33,7 @@ const waitTillHTMLRendered = async (page, timeout = 30000) => {
     }
 
     lastHTMLSize = currentHTMLSize;
-    await page.waitFor(checkDurationMsecs);
+    await page.waitForTimeout(checkDurationMsecs);
   }
 };
 
