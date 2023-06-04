@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const apiPush = require("../apiPush");
 const Subscription = require("egg").Subscription;
 
 class ReptileDetail extends Subscription {
@@ -18,12 +19,23 @@ class ReptileDetail extends Subscription {
       path.join(__dirname, "../jsEval/yuansu/detail.js"),
       "utf-8"
     );
-    const data = await this.ctx.service.reptile.detail(
+    const res = await this.ctx.service.reptile.detail(
       "https://www.ysu2.com/90884.html",
       code,
       "xwatson"
     );
-    this.app.getLogger("yuansuLogger").info("抓取数据: ", JSON.stringify(data));
+    this.app
+      .getLogger("yuansuLogger")
+      .info("抓取数据: ", JSON.stringify({ ...res, content: "...." }));
+    if (res && res.apiPush) {
+      res.apiPush.data.content += `${res.pwd ? `${res.pwd}` : ""}${
+        res.sourceUrl ? `<a href='${res.sourceUrl}'>资源链接</a>` : ""
+      }`;
+      const apiRes = await apiPush(res.apiPush.action, res.apiPush.data);
+      this.app
+        .getLogger("yuansuLogger")
+        .info("api推送结果: ", JSON.stringify(apiRes));
+    }
   }
 }
 

@@ -9,6 +9,34 @@ try {
   if ($content) {
     var $remove = $content.querySelector(".post-note");
     $remove && $remove.remove();
+    $remove = $content.querySelector(".b2-audio-content");
+    $remove && $remove.remove();
+
+    var imgs = $content.querySelectorAll("img");
+    if (imgs && imgs.length) {
+      imgs.forEach(($img) => {
+        const dataSrc = $img.getAttribute("data-src");
+        if (dataSrc) {
+          $img.setAttribute("src", dataSrc);
+        }
+      });
+    }
+    res.content = $content.innerHTML;
+    res.content = res.content.replace(
+      $content.querySelector(
+        "#download-box > div > div.download-list > div > div.download-info > div.download-current"
+      ).innerHTML,
+      ""
+    );
+    res.apiPush = {
+      action: "wordpress-postArticle",
+      data: {
+        title: res.title,
+        content: res.content,
+        status: "publish",
+        categories: [7],
+      },
+    };
     var $login = $content.querySelector(".content-cap-login");
     var $dbb = $content.querySelector(
       "#download-box .download-button-box button"
@@ -56,7 +84,7 @@ try {
       } else {
         res.action = "new_download_page";
         res.clickSelector = "#download-box .download-button-box button";
-        res.code = `var res = {};
+        res.code = `var res = { };
             var $pwd = document.querySelector("#download-page > div.tqma");
             if ($pwd) {
               res.pwd = $pwd.innerHTML;
@@ -70,13 +98,6 @@ try {
             `;
       }
     }
-    res.content = $content.innerHTML;
-    res.content = res.content.replace(
-      $content.querySelector(
-        "#download-box > div > div.download-list > div > div.download-info > div.download-current"
-      ).innerHTML,
-      ""
-    );
   } else {
     res.errMsg = `没有content元素。\n${document.innerHTML}`;
   }
