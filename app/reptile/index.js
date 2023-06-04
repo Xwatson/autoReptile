@@ -17,8 +17,7 @@ async function clickNewPage(browser, page, clickSelector) {
   const newPage = await newPagePromise;
   console.log("已点击", clickSelector);
   console.log("页面标题：",await newPage.title());
-  await sleep(1000);
-  await waitTillHTMLRendered(newPage);
+  await sleep(5000);
   return newPage;
 }
 async function evaluateNewPage(browser, page, code, noClosePage) {
@@ -100,7 +99,7 @@ module.exports = async (task) => {
     return null;
   }
   const browser = await puppeteer.launch({
-    headless: false,
+    // headless: false,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     ...(task.user_name
       ? { userDataDir: path.join(__dirname, `../../userData/${task.user_name}`) }

@@ -14,5 +14,10 @@ module.exports = (appInfo) => {
         file: path.join(appInfo.root, "logs/yuansu/yuansu.log"),
       },
     },
+    security: {
+      csrf: {
+        ignoreJSON: true
+      },
+    }
   };
 };
